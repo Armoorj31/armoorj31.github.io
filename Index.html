@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Renfred J. Armoo — Business Analytics</title>
+<meta name="description" content="Portfolio of Renfred J. Armoo — business analytics, dashboards, and data-driven decision support.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F7F3;
+    --paper-raised:#FFFFFF;
+    --ink:#1C2321;
+    --muted:#5B6660;
+    --grid:#DADFDA;
+    --grid-strong:#C3CAC4;
+    --teal:#1C6E68;
+    --teal-deep:#124F4B;
+    --amber:#C77D2E;
+    --focus:#1C6E68;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    padding-bottom:64px; /* room for fixed sheet-tab bar */
+  }
+
+  a{color:var(--teal-deep);}
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--focus);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    margin:0 0 0.4em 0;
+    letter-spacing:-0.01em;
+  }
+
+  .num{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- Toolbar ---------- */
+  .toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:14px 28px;
+    border-bottom:1px solid var(--grid-strong);
+    background:var(--paper-raised);
+    flex-wrap:wrap;
+  }
+  .toolbar__name{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .toolbar__name svg{flex:none;}
+  .toolbar__links{
+    display:flex;
+    gap:20px;
+    font-size:14px;
+  }
+  .toolbar__links a{
+    text-decoration:none;
+    color:var(--ink);
+    border-bottom:1px solid transparent;
+    padding-bottom:2px;
+  }
+  .toolbar__links a:hover{border-bottom-color:var(--teal);}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    max-width:1040px;
+    margin:0 auto;
+    padding:64px 28px 40px;
+  }
+  .hero__eyebrow-row{
+    display:flex;
+    gap:10px;
+    align-items:baseline;
+    margin-bottom:18px;
+    color:var(--muted);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 4vw, 3.1rem);
+    max-width:14ch;
+  }
+  .hero__role{
+    font-size:1.15rem;
+    color:var(--muted);
+    max-width:52ch;
+    margin-bottom:8px;
+  }
+  .hero__blurb{
+    max-width:60ch;
+    color:var(--ink);
+    margin-bottom:30px;
+  }
+  .hero__ctas{
+    display:flex;
+    gap:14px;
+    margin-bottom:44px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    padding:11px 20px;
+    border-radius:3px;
+    text-decoration:none;
+    display:inline-block;
+    border:1px solid var(--teal-deep);
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .btn--solid{background:var(--teal-deep); color:#fff;}
+  .btn--solid:hover{background:var(--teal);}
+  .btn--outline{background:transparent; color:var(--teal-deep);}
+  .btn--outline:hover{background:rgba(28,110,104,0.08);}
+
+  /* Ledger row of real project metrics */
+  .ledger{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    border:1px solid var(--grid-strong);
+    border-radius:4px;
+    overflow:hidden;
+    background:var(--paper-raised);
+    opacity:0;
+    transform:translateY(8px);
+    animation:rise 0.6s ease-out 0.15s forwards;
+  }
+  @keyframes rise{ to{opacity:1; transform:translateY(0);} }
+  .ledger__cell{
+    padding:20px 16px;
+    border-left:1px solid var(--grid);
+    text-align:left;
+  }
+  .ledger__cell:first-child{border-left:none;}
+  .ledger__value{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:1.6rem;
+    font-weight:600;
+    color:var(--teal-deep);
+    display:block;
+    margin-bottom:4px;
+  }
+  .ledger__label{
+    font-size:12.5px;
+    color:var(--muted);
+    line-height:1.35;
+  }
+
+  /* ---------- Sheet sections ---------- */
+  .sheet{
+    max-width:1040px;
+    margin:0 auto;
+    padding:56px 28px;
+    border-top:1px solid var(--grid);
+    scroll-margin-top:24px;
+  }
+  .sheet__head{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:28px;
+  }
+  .sheet__cell-ref{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  /* About */
+  .about{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:8px 20px;
+    max-width:68ch;
+  }
+  .about p{margin:0 0 14px 0;}
+  .row-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--grid-strong);
+    padding-top:2px;
+    user-select:none;
+  }
+
+  /* Experience table */
+  .exp-table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  .exp-table thead th{
+    text-align:left;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:500;
+    font-size:12.5px;
+    color:var(--muted);
+    border-bottom:1px solid var(--grid-strong);
+    padding:8px 14px 10px 0;
+  }
+  .exp-table tbody tr{border-bottom:1px solid var(--grid);}
+  .exp-table tbody tr:nth-child(even){background:rgba(28,110,104,0.035);}
+  .exp-table td{
+    padding:16px 14px 16px 0;
+    vertical-align:top;
+    font-size:15px;
+  }
+  .exp-table td.dates{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--muted);
+    white-space:nowrap;
+  }
+  .exp-table td.role{font-weight:600;}
+  .exp-table td.org{color:var(--muted); font-size:14px;}
+  .exp-table ul{margin:6px 0 0 0; padding-left:18px;}
+  .exp-table li{margin-bottom:4px;}
+
+  /* Projects */
+  .projects{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:20px;
+  }
+  .card{
+    background:var(--paper-raised);
+    border:1px solid var(--grid-strong);
+    border-radius:4px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+  }
+  .card__bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 16px;
+    background:#EFF2EE;
+    border-bottom:1px solid var(--grid-strong);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .card__status{
+    padding:2px 8px;
+    border-radius:10px;
+    font-size:11px;
+  }
+  .card__status--done{background:rgba(28,110,104,0.14); color:var(--teal-deep);}
+  .card__status--wip{background:rgba(199,125,46,0.16); color:var(--amber);}
+  .card__body{padding:18px 18px 20px;}
+  .card h3{font-size:1.15rem; margin-bottom:6px;}
+  .card__sub{color:var(--muted); font-size:13.5px; margin-bottom:14px;}
+  .card ul{margin:0 0 14px 0; padding-left:18px; font-size:14.5px;}
+  .card li{margin-bottom:6px;}
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--teal-deep);
+    background:rgba(28,110,104,0.09);
+    padding:3px 8px;
+    border-radius:3px;
+  }
+  .card__link{font-size:13.5px; font-weight:600; text-decoration:none;}
+  .card__link:hover{text-decoration:underline;}
+
+  /* Skills */
+  .skill-groups{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:28px;
+  }
+  .skill-group h3{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    font-weight:500;
+    color:var(--muted);
+    text-transform:none;
+    margin-bottom:12px;
+  }
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-size:13.5px;
+    padding:6px 12px;
+    border:1px solid var(--grid-strong);
+    border-radius:16px;
+    background:var(--paper-raised);
+  }
+  .chip--learning{border-style:dashed; color:var(--muted);}
+
+  /* Education */
+  .edu-item{margin-bottom:20px;}
+  .edu-item h3{font-size:1.05rem; margin-bottom:2px;}
+  .edu-item .org{color:var(--muted); font-size:14px;}
+  .edu-item .dates{font-family:'IBM Plex Mono', monospace; font-size:13px; color:var(--muted);}
+
+  /* Contact / footer content */
+  .contact{
+    display:flex;
+    flex-wrap:wrap;
+    gap:32px;
+    align-items:flex-start;
+  }
+  .contact__main{max-width:46ch;}
+  .contact__list{list-style:none; margin:16px 0 0; padding:0; font-size:15px;}
+  .contact__list li{margin-bottom:8px;}
+  .contact__list a{text-decoration:none;}
+  .contact__list a:hover{text-decoration:underline;}
+  .foot-note{
+    max-width:1040px;
+    margin:0 auto;
+    padding:0 28px 40px;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  /* ---------- Sheet tab bar (fixed) ---------- */
+  .tabbar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    display:flex;
+    background:#EAEDE9;
+    border-top:1px solid var(--grid-strong);
+    overflow-x:auto;
+    z-index:20;
+  }
+  .tabbar button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    background:transparent;
+    border:none;
+    border-right:1px solid var(--grid-strong);
+    padding:14px 20px;
+    color:var(--muted);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .tabbar button:hover{background:rgba(28,110,104,0.08); color:var(--ink);}
+  .tabbar button[aria-current="true"]{
+    background:var(--paper-raised);
+    color:var(--teal-deep);
+    font-weight:600;
+    box-shadow:inset 0 2px 0 var(--teal-deep);
+  }
+
+  @media (max-width: 640px){
+    .hero__eyebrow-row{flex-wrap:wrap; gap:6px 10px;}
+    .ledger{grid-template-columns:repeat(2, 1fr);}
+    .ledger__cell:nth-child(3){border-left:none;}
+    .ledger__cell:nth-child(3), .ledger__cell:nth-child(4){border-top:1px solid var(--grid);}
+    .toolbar{padding:12px 18px;}
+    .hero{padding:44px 18px 30px;}
+    .sheet{padding:44px 18px;}
+    .about{grid-template-columns:1fr;}
+    .row-num{display:none;}
+    .exp-table thead{display:none;}
+    .exp-table tbody tr{display:block; padding:14px 0;}
+    .exp-table td{display:block; padding:2px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="toolbar">
+  <span class="toolbar__name">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="14" height="14" rx="1.5" stroke="#5B6660" stroke-width="1.2"/><line x1="1" y1="6" x2="15" y2="6" stroke="#5B6660" stroke-width="1"/><line x1="6" y1="6" x2="6" y2="15" stroke="#5B6660" stroke-width="1"/></svg>
+    Armoo_Renfred_Portfolio
+  </span>
+  <nav class="toolbar__links" aria-label="Quick links">
+    <a href="mailto:armooren31@gmail.com">Email</a>
+    <a href="https://www.linkedin.com/in/renfred-armoo" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://public.tableau.com/app/profile/renfred.armoo" target="_blank" rel="noopener">Tableau Public</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero__eyebrow-row">
+      <span style="white-space:nowrap;">Stafford, VA</span><span>·</span><span>Open to hybrid, remote &amp; onsite</span>
+    </div>
+    <h1>Renfred J. Armoo</h1>
+    <p class="hero__role">Business analytics — turning scattered, multi-source data into reports leadership actually uses.</p>
+    <p class="hero__blurb">I'm an M.S. Business Analytics candidate at George Mason University with two years of hands-on reporting and analysis experience, and a growing set of independent projects in SQL, Tableau, and Excel. This page walks through what I've built and what I've learned doing it.</p>
+    <div class="hero__ctas">
+      <a class="btn btn--solid" href="#projects">View projects</a>
+      <a class="btn btn--outline" href="#contact">Get in touch</a>
+    </div>
+
+    <div class="ledger" role="group" aria-label="Selected project metrics">
+      <div class="ledger__cell">
+        <span class="ledger__value num">20.4%</span>
+        <span class="ledger__label">attrition rate surfaced in the highest-turnover department</span>
+      </div>
+      <div class="ledger__cell">
+        <span class="ledger__value num">10%</span>
+        <span class="ledger__label">reporting accuracy improvement from Excel validation work</span>
+      </div>
+      <div class="ledger__cell">
+        <span class="ledger__value num">500+</span>
+        <span class="ledger__label">HR payroll records cleaned and standardized in MySQL</span>
+      </div>
+      <div class="ledger__cell">
+        <span class="ledger__value num">20+</span>
+        <span class="ledger__label">U.S. cities compared in a cost-of-living Tableau analysis</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="sheet">
+    <div class="sheet__head">
+      <span class="sheet__cell-ref">A1</span>
+      <h2>About</h2>
+    </div>
+    <div class="about">
+      <span class="row-num">1</span>
+      <p>I work in the space between messy data and a decision someone needs to make. Right now that means Excel-based reporting and budget variance analysis as an Administrative Operations Assistant at Inova — consolidating figures from multiple sources into recurring reports senior leadership relies on.</p>
+      <span class="row-num">2</span>
+      <p>Before that, I analyzed student financial data at VCU's Office of Financial Aid and studied visitor engagement patterns as a research intern at the Poe Museum — two very different domains that taught me the same lesson: the analysis only matters if someone can act on it.</p>
+      <span class="row-num">3</span>
+      <p>I'm now pursuing an M.S. in Business Analytics at George Mason University, and building out independent projects in SQL, Tableau, and MySQL to round out the tools I use day to day.</p>
+    </div>
+  </section>
+
+  <section id="experience" class="sheet">
+    <div class="sheet__head">
+      <span class="sheet__cell-ref">A12</span>
+      <h2>Experience</h2>
+    </div>
+    <table class="exp-table">
+      <thead>
+        <tr><th>Dates</th><th>Role</th><th>Highlights</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="dates">Jun 2024 – Present</td>
+          <td>
+            <div class="role">Administrative Operations Assistant</div>
+            <div class="org">Inova · Fairfax, VA</div>
+          </td>
+          <td>
+            <ul>
+              <li>Consolidate multi-source operational data into recurring Excel reports for senior leadership</li>
+              <li>Improved reporting accuracy and consistency by 10% through data validation techniques</li>
+              <li>Prepare monthly budget variance reports and track KPIs for resource prioritization</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="dates">Aug 2022 – Dec 2022</td>
+          <td>
+            <div class="role">Market Research &amp; Analytics Intern</div>
+            <div class="org">Poe Museum · Richmond, VA</div>
+          </td>
+          <td>
+            <ul>
+              <li>Analyzed 300+ visitor survey responses to identify engagement drivers</li>
+              <li>Findings informed the museum's audience acquisition and digital marketing strategy</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td class="dates">Aug 2019 – May 2023</td>
+          <td>
+            <div class="role">Financial Data Analyst Assistant</div>
+            <div class="org">VCU Office of Financial Aid · Richmond, VA</div>
+          </td>
+          <td>
+            <ul>
+              <li>Extracted, validated, and reconciled student financial data using SQL</li>
+              <li>Built Excel/Google Sheets trackers summarizing KPIs for leadership review</li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="projects" class="sheet">
+    <div class="sheet__head">
+      <span class="sheet__cell-ref">A20</span>
+      <h2>Projects</h2>
+    </div>
+    <div class="projects">
+
+      <article class="card">
+        <div class="card__bar">
+          <span>HR Analytics Platform</span>
+          <span class="card__status card__status--done">Complete</span>
+        </div>
+        <div class="card__body">
+          <h3>Pay equity &amp; attrition analysis</h3>
+          <p class="card__sub">Personal project · Aug 2026</p>
+          <ul>
+            <li>Cleaned and standardized a 500+ record HR payroll dataset in MySQL — deduplication, date/salary normalization, error correction</li>
+            <li>Built a Tableau dashboard that surfaced a 20.4% attrition rate in the company's highest-turnover department</li>
+            <li>Applied transaction-safe SQL practices with step-by-step validation, documenting data-integrity tradeoffs along the way</li>
+          </ul>
+          <div class="tags">
+            <span class="tag">MySQL</span><span class="tag">Tableau</span><span class="tag">Data Cleaning</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__bar">
+          <span>Cost of Living Dashboard</span>
+          <span class="card__status card__status--done">Complete</span>
+        </div>
+        <div class="card__body">
+          <h3>20+ cities, 15 years of trends</h3>
+          <p class="card__sub">Academic project · Apr 2026</p>
+          <ul>
+            <li>Built a 3-dashboard Tableau analysis comparing housing, grocery, dining, and transportation costs against median income across 20+ U.S. cities, 2010–2024</li>
+            <li>Identified an affordability gap: suburban rents converging toward urban rents nationally while income growth lags cost-of-living</li>
+            <li>Added a geographic view with custom geocoding and annotated story points for historical context (CPI inflation, pandemic impact, fuel prices)</li>
+          </ul>
+          <div class="tags">
+            <span class="tag">Tableau Public</span><span class="tag">Geocoding</span><span class="tag">Data Storytelling</span>
+          </div>
+          <a class="card__link" href="https://public.tableau.com/app/profile/renfred.armoo" target="_blank" rel="noopener">View on Tableau Public</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__bar">
+          <span>IT Service Desk Analytics</span>
+          <span class="card__status card__status--wip">In progress</span>
+        </div>
+        <div class="card__body">
+          <h3>Ticket performance &amp; resourcing</h3>
+          <p class="card__sub">Personal project · started Jul 2026</p>
+          <ul>
+            <li>Building a relational SQL database covering 5,000+ IT service records, employee profiles, and support team dimensions</li>
+            <li>Cleaning and joining data with SQL CTEs and validation techniques</li>
+            <li>Planned: an Excel KPI dashboard and a technical report translating findings into recommendations on ticketing performance and resource allocation</li>
+          </ul>
+          <div class="tags">
+            <span class="tag">SQL</span><span class="tag">Excel</span><span class="tag">KPI Reporting</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section id="skills" class="sheet">
+    <div class="sheet__head">
+      <span class="sheet__cell-ref">A31</span>
+      <h2>Skills</h2>
+    </div>
+    <div class="skill-groups">
+      <div class="skill-group">
+        <h3>Tools</h3>
+        <div class="chip-row">
+          <span class="chip">Excel</span>
+          <span class="chip">SQL</span>
+          <span class="chip">Tableau</span>
+          <span class="chip">Power BI</span>
+          <span class="chip chip--learning">R (coursework)</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Analysis</h3>
+        <div class="chip-row">
+          <span class="chip">Dashboard development</span>
+          <span class="chip">Forecasting</span>
+          <span class="chip">Budget variance analysis</span>
+          <span class="chip">Data validation &amp; cleaning</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Ways of working</h3>
+        <div class="chip-row">
+          <span class="chip">Process improvement</span>
+          <span class="chip">Requirements gathering</span>
+          <span class="chip">Cross-functional collaboration</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="education" class="sheet">
+    <div class="sheet__head">
+      <span class="sheet__cell-ref">A38</span>
+      <h2>Education &amp; certifications</h2>
+    </div>
+    <div class="edu-item">
+      <h3>M.S. Business Analytics</h3>
+      <div class="org">George Mason University, Costello College of Business</div>
+      <div class="dates">Anticipated Dec 2027</div>
+    </div>
+    <div class="edu-item">
+      <h3>B.S. Marketing</h3>
+      <div class="org">Virginia Commonwealth University, School of Business</div>
+      <div class="dates">May 2023</div>
+    </div>
+    <div class="edu-item">
+      <h3>Certifications</h3>
+      <div class="org">Business Analytics Professional Certificate, George Mason University (May 2024) · Google AI Essentials: Data Analytics (Jun 2026)</div>
+    </div>
+  </section>
+
+  <section id="contact" class="sheet">
+    <div class="sheet__head">
+      <span class="sheet__cell-ref">A44</span>
+      <h2>Contact</h2>
+    </div>
+    <div class="contact">
+      <div class="contact__main">
+        <p>Happy to talk about a specific role, walk through any of these projects in more depth, or just compare notes on Tableau. Reach me at:</p>
+        <ul class="contact__list">
+          <li><a href="mailto:armooren31@gmail.com">armooren31@gmail.com</a></li>
+          <li><a href="tel:5714840986">571-484-0986</a></li>
+          <li><a href="https://www.linkedin.com/in/renfred-armoo" target="_blank" rel="noopener">linkedin.com/in/renfred-armoo</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<p class="foot-note">Renfred J. Armoo · Stafford, VA · Last updated September 2026</p>
+
+<nav class="tabbar" aria-label="Section navigation">
+  <button data-target="about">About</button>
+  <button data-target="experience">Experience</button>
+  <button data-target="projects">Projects</button>
+  <button data-target="skills">Skills</button>
+  <button data-target="education">Education</button>
+  <button data-target="contact">Contact</button>
+</nav>
+
+<script>
+  const tabs = document.querySelectorAll('.tabbar button');
+  const sections = Array.from(tabs).map(t => document.getElementById(t.dataset.target));
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.getElementById(tab.dataset.target).scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  const setActive = (id) => {
+    tabs.forEach(t => t.setAttribute('aria-current', t.dataset.target === id ? 'true' : 'false'));
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        setActive(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+
+  sections.forEach(sec => sec && observer.observe(sec));
+</script>
+
+</body>
+</html>
